@@ -2,6 +2,7 @@
 import argparse
 import copy
 import os
+os.environ['CUDA_VISIBLE_DEVICES']='-1'
 import os.path as osp
 import time
 import warnings
@@ -21,6 +22,9 @@ from mmdet.utils import (collect_env, get_device, get_root_logger,
                          replace_cfg_vals, setup_multi_processes,
                          update_data_root)
 
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
@@ -198,7 +202,7 @@ def main():
     logger.info(f'Distributed training: {distributed}')
     logger.info(f'Config:\n{cfg.pretty_text}')
 
-    cfg.device = get_device()
+    cfg.device = get_device() #获取cpu或gpu
     # set random seeds
     seed = init_random_seed(args.seed, device=cfg.device)
     seed = seed + dist.get_rank() if args.diff_seed else seed

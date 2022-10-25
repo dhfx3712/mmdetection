@@ -147,6 +147,7 @@ class Darknet(BaseModule):
                         val=1,
                         layer=['_BatchNorm', 'GroupNorm'])
                 ]
+            print (f'darknet : pretrained is None . init_cfg={init_cfg}')
         else:
             raise TypeError('pretrained must be a str or None')
 

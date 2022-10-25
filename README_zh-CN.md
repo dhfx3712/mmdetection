@@ -1,42 +1,10 @@
-<div align="center">
-  <img src="resources/mmdet-logo.png" width="600"/>
-  <div>&nbsp;</div>
-  <div align="center">
-    <b><font size="5">OpenMMLab 官网</font></b>
-    <sup>
-      <a href="https://openmmlab.com">
-        <i><font size="4">HOT</font></i>
-      </a>
-    </sup>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <b><font size="5">OpenMMLab 开放平台</font></b>
-    <sup>
-      <a href="https://platform.openmmlab.com">
-        <i><font size="4">TRY IT OUT</font></i>
-      </a>
-    </sup>
-  </div>
-  <div>&nbsp;</div>
+demo/MMDet_Tutorial.py提取demo/test_train.py 
 
-[![PyPI](https://img.shields.io/pypi/v/mmdet)](https://pypi.org/project/mmdet)
-[![docs](https://img.shields.io/badge/docs-latest-blue)](https://mmdetection.readthedocs.io/en/latest/)
-[![badge](https://github.com/open-mmlab/mmdetection/workflows/build/badge.svg)](https://github.com/open-mmlab/mmdetection/actions)
-[![codecov](https://codecov.io/gh/open-mmlab/mmdetection/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmdetection)
-[![license](https://img.shields.io/github/license/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/blob/master/LICENSE)
-[![open issues](https://isitmaintained.com/badge/open/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/issues)
-[![issue resolution](https://isitmaintained.com/badge/resolution/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/issues)
 
-[📘使用文档](https://mmdetection.readthedocs.io/zh_CN/stable/) |
-[🛠️安装教程](https://mmdetection.readthedocs.io/zh_CN/stable/get_started.html) |
-[👀模型库](https://mmdetection.readthedocs.io/zh_CN/stable/model_zoo.html) |
-[🆕更新日志](https://mmdetection.readthedocs.io/en/stable/changelog.html) |
-[🚀进行中的项目](https://github.com/open-mmlab/mmdetection/projects) |
-[🤔报告问题](https://github.com/open-mmlab/mmdetection/issues/new/choose)
 
-</div>
 
-<div align="center">
 
+<<<<<<< HEAD
 [English](README.md) | 简体中文
 
 </div>
@@ -375,3 +343,5 @@ MMDetection 是一款由来自不同高校和企业的研发人员共同参与�
 - 🔥 提供与各行各业开发者充分交流的平台
 
 干货满满 📘，等你来撩 💗，OpenMMLab 社区期待您的加入 👬
+=======
+>>>>>>> 5e7bc2ae (yolov3,yolov4)
