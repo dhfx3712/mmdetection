@@ -368,6 +368,7 @@ class BaseYOLOHead(BaseDenseHead, BBoxTestMixin):
         """
 
         num_imgs = len(pred_map)
+        print (f'yolo_head : {num_imgs} ,pre_map : {pred_map.shape}')
         pred_map = pred_map.permute(0, 2, 3,
                                     1).reshape(num_imgs, -1, self.num_attrib)
         neg_mask = neg_map.float()  # 忽略位置图

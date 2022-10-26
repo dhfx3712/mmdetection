@@ -11,7 +11,7 @@ class RRYolov3Head(BaseYOLOHead):
 
     def _init_layers(self):
         layer_list = [
-            # stage 6, largest
+            # stage 6, scale largest，图最小
             OrderedDict([
                 ('1_head', vn_layer.Head(self.in_channels[0], self.num_anchors, self.num_classes)),
             ]),

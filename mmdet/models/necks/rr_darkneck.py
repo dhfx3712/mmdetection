@@ -16,18 +16,18 @@ class RRDarkNeck(nn.Module):
         layer_list = [
             # the following is extra
             # layer 3
-            # output third scale, largest
+            # output third scale, largest 1024=32*32,输入1024，first=true，halfchannel=1024/2，输出1024
             OrderedDict([
                 ('head_body_1', vn_layer.HeadBody(input_channels * (2 ** 5), first_head=True)),
             ]),
 
-            # layer 4
+            # layer 4 通道/2，尺寸上采2倍
             OrderedDict([
                 ('trans_1', vn_layer.Transition(input_channels * (2 ** 4))),
             ]),
 
             # layer 5
-            # output second scale
+            # output second scale ，非first层，通道拼接(2 ** 4 + 2 ** 3)/3，halfchannel则是整数
             OrderedDict([
                 ('head_body_2', vn_layer.HeadBody(input_channels * (2 ** 4 + 2 ** 3))),
             ]),

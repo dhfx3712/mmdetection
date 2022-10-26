@@ -38,6 +38,7 @@ class YOLOBBoxCoder(BaseBBoxCoder):
             torch.Tensor: Box transformation deltas
         """
 
+        #tensor[..., 1]当前位置所有。a[...].shape torch.Size([4, 3, 28, 28])，a[0,...].shape torch.Size([3, 28, 28])
         assert bboxes.size(0) == gt_bboxes.size(0)
         assert bboxes.size(-1) == gt_bboxes.size(-1) == 4
         x_center_gt = (gt_bboxes[..., 0] + gt_bboxes[..., 2]) * 0.5

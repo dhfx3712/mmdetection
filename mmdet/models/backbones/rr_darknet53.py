@@ -14,11 +14,12 @@ class RRDarknet53(nn.Module):
 
     def __init__(self, pretrained=None, input_channels=32):
         super().__init__()
+        #darknet (1, 2, 8, 8, 4)
         stage_cfg = {'stage_2': 2, 'stage_3': 3, 'stage_4': 9, 'stage_5': 9, 'stage_6': 5}
 
         # Network
         layer_list = [
-            # first scale, smallest
+            # first scale, smallest 【32, 16, 8】stage4第三层缩放2**3。输出图最大
             OrderedDict([
                 ('stage_1', vn_layer.Conv2dBatchLeaky(3, input_channels, 3, 1)),
                 ('stage_2', vn_layer.Stage(input_channels, stage_cfg['stage_2'])),
@@ -76,4 +77,4 @@ class RRDarknet53(nn.Module):
         stage_4 = self.layers[0](x)
         stage_5 = self.layers[1](stage_4)
         stage_6 = self.layers[2](stage_5)
-        return [stage_6, stage_5, stage_4]  # 由小到大特征图输出
+        return [stage_6, stage_5, stage_4]  # 由小到大特征图输出，scale【2**5，2**4，2**3】
