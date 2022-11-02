@@ -16,7 +16,7 @@ class StandardRoIHead(BaseRoIHead, BBoxTestMixin, MaskTestMixin):
         self.bbox_assigner = None
         self.bbox_sampler = None
         if self.train_cfg:
-            self.bbox_assigner = build_assigner(self.train_cfg.assigner)
+            self.bbox_assigner = build_assigner(self.train_cfg.assigner) #常用的正负样本分配策略，典型的一对多（一个groud truth对应多个bbox）。后面有很多论文探索如何更合理地定义正负样本分配
             self.bbox_sampler = build_sampler(
                 self.train_cfg.sampler, context=self)
 
@@ -90,6 +90,7 @@ class StandardRoIHead(BaseRoIHead, BBoxTestMixin, MaskTestMixin):
                 assign_result = self.bbox_assigner.assign(
                     proposal_list[i], gt_bboxes[i], gt_bboxes_ignore[i],
                     gt_labels[i])
+                print (f'roi_bbox_assigner batch-{i}, assign_result  {str(assign_result)}') #<AssignResult(num_gts=1, gt_inds.shape=(1000,), max_overlaps.shape=(1000,), labels.shape=(1000,))>
                 sampling_result = self.bbox_sampler.sample(
                     assign_result,
                     proposal_list[i],

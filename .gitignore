@@ -127,3 +127,4 @@ work_dirs/
 #other
 *.gz
 tutorial_exps/tf_logs/*
+demo/tutorial_exps/*

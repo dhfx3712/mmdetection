@@ -124,14 +124,14 @@ class TwoStageDetector(BaseDetector):
         Returns:
             dict[str, Tensor]: a dictionary of loss components
         """
-        x = self.extract_feat(img)
-
+        x = self.extract_feat(img) #backbone和neck输出
+        print (f'two_stage_backbone_neck : {len(x)},')
         losses = dict()
 
         # RPN forward and loss
         if self.with_rpn:
             proposal_cfg = self.train_cfg.get('rpn_proposal',
-                                              self.test_cfg.rpn)
+                                              self.test_cfg.rpn) #获取训练rpn配置
             rpn_losses, proposal_list = self.rpn_head.forward_train(
                 x,
                 img_metas,

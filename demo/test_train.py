@@ -1,6 +1,8 @@
 import os
 os.environ['PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION'] = 'python'
 import copy
+import sys
+sys.path.append('/Users/admin/data/test_project/mmdetection')
 import os.path as osp
 
 import mmcv
@@ -65,7 +67,7 @@ class KittiTinyDataset(CustomDataset):
 
 
 from mmcv import Config
-cfg = Config.fromfile('./configs/faster_rcnn/faster_rcnn_r101_fpn_1x_coco.py')
+cfg = Config.fromfile('/Users/admin/data/test_project/mmdetection/configs/faster_rcnn/faster_rcnn_r101_fpn_1x_coco.py')
 
 
 

@@ -99,6 +99,7 @@ class MaxIoUAssigner(BaseAssigner):
         assign_on_cpu = True if (self.gpu_assign_thr > 0) and (
             gt_bboxes.shape[0] > self.gpu_assign_thr) else False
         # compute overlap and assign gt on CPU when number of GT is large
+        print (f'max_iou_assigner_input : {bboxes.shape} {gt_bboxes.shape} gt_bboxes_ignore : {gt_bboxes_ignore}  gt_label : {gt_labels} iof_thr {self.ignore_iof_thr}')
         if assign_on_cpu:
             device = bboxes.device
             bboxes = bboxes.cpu()
@@ -109,7 +110,8 @@ class MaxIoUAssigner(BaseAssigner):
                 gt_labels = gt_labels.cpu()
 
         overlaps = self.iou_calculator(gt_bboxes, bboxes)
-
+        print (f'max_iou_assigner : iou {overlaps.shape}  gt_bb {gt_bboxes.shape}  bb {bboxes.shape}')
+        print(f'max_iou_assigner_paramma : {self.__dict__}')
         if (self.ignore_iof_thr > 0 and gt_bboxes_ignore is not None
                 and gt_bboxes_ignore.numel() > 0 and bboxes.numel() > 0):
             if self.ignore_wrt_candidates:
@@ -143,12 +145,12 @@ class MaxIoUAssigner(BaseAssigner):
         """
         num_gts, num_bboxes = overlaps.size(0), overlaps.size(1)
 
-        # 1. assign -1 by default
+        # 1. assign -1 by default new_full填充与原tensor一样的结构
         assigned_gt_inds = overlaps.new_full((num_bboxes, ),
                                              -1,
                                              dtype=torch.long)
 
-        if num_gts == 0 or num_bboxes == 0:
+        if num_gts == 0 or num_bboxes == 0: #返回空的情况
             # No ground truth or boxes, return empty assignment
             max_overlaps = overlaps.new_zeros((num_bboxes, ))
             if num_gts == 0:
@@ -174,7 +176,7 @@ class MaxIoUAssigner(BaseAssigner):
         gt_max_overlaps, gt_argmax_overlaps = overlaps.max(dim=1)
 
         # 2. assign negative: below
-        # the negative inds are set to be 0
+        # the negative inds are set to be 0 负样本。thr可以是值也可以是区间
         if isinstance(self.neg_iou_thr, float):
             assigned_gt_inds[(max_overlaps >= 0)
                              & (max_overlaps < self.neg_iou_thr)] = 0
@@ -183,7 +185,7 @@ class MaxIoUAssigner(BaseAssigner):
             assigned_gt_inds[(max_overlaps >= self.neg_iou_thr[0])
                              & (max_overlaps < self.neg_iou_thr[1])] = 0
 
-        # 3. assign positive: above positive IoU threshold
+        # 3. assign positive: above positive IoU threshold 正样本
         pos_inds = max_overlaps >= self.pos_iou_thr
         assigned_gt_inds[pos_inds] = argmax_overlaps[pos_inds] + 1
 

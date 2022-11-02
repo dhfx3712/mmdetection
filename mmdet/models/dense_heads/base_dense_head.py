@@ -328,6 +328,7 @@ class BaseDenseHead(BaseModule, metaclass=ABCMeta):
                 proposal_list (list[Tensor]): Proposals of each image.
         """
         outs = self(x)
+        print (f'rpn_head : {len(outs)} , img_metas : {img_metas}')
         if gt_labels is None:
             loss_inputs = outs + (gt_bboxes, img_metas)
         else:
