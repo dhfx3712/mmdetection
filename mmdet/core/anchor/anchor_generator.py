@@ -559,7 +559,7 @@ class SSDAnchorGenerator(AnchorGenerator):
         for k in range(len(self.strides)):
             scales = [1., np.sqrt(max_sizes[k] / min_sizes[k])]
             anchor_ratio = [1.]
-            for r in ratios[k]:
+            for r in ratios[k]: #遍历ratio参数[1] -->[1,1/2,2]
                 anchor_ratio += [1 / r, r]  # 4 or 6 ratio
             anchor_ratios.append(torch.Tensor(anchor_ratio))
             anchor_scales.append(torch.Tensor(scales))
@@ -579,14 +579,15 @@ class SSDAnchorGenerator(AnchorGenerator):
                 feature levels.
         """
         multi_level_base_anchors = []
-        for i, base_size in enumerate(self.base_sizes):
+        for i, base_size in enumerate(self.base_sizes):#不同层，scales * ratios是改层baseanchor数量
             base_anchors = self.gen_single_level_base_anchors(
                 base_size,
                 scales=self.scales[i],
                 ratios=self.ratios[i],
                 center=self.centers[i])
+            Log_debug.info(f'ssdanchor : level_base_anchor-{i} : {base_anchors}')
             indices = list(range(len(self.ratios[i])))
-            indices.insert(1, len(indices))
+            indices.insert(1, len(indices)) #插入一个
             base_anchors = torch.index_select(base_anchors, 0,
                                               torch.LongTensor(indices))
             multi_level_base_anchors.append(base_anchors)
@@ -703,6 +704,7 @@ class LegacyAnchorGenerator(AnchorGenerator):
             x_center - 0.5 * (ws - 1), y_center - 0.5 * (hs - 1),
             x_center + 0.5 * (ws - 1), y_center + 0.5 * (hs - 1)
         ]
+
         base_anchors = torch.stack(base_anchors, dim=-1).round()
 
         return base_anchors
