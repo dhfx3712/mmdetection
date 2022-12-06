@@ -5,7 +5,7 @@ from mmcv.cnn import ConvModule, DepthwiseSeparableConvModule
 from mmcv.runner import BaseModule
 
 from ..builder import NECKS
-
+from mmdet.utils import Log_debug
 
 @NECKS.register_module()
 class SSDNeck(BaseModule):
@@ -97,8 +97,9 @@ class SSDNeck(BaseModule):
             outs[0] = self.l2_norm(outs[0])
 
         feat = outs[-1]
-        for layer in self.extra_layers:
+        for index,layer in enumerate(self.extra_layers):
             feat = layer(feat)
+            Log_debug.info(f'ssd_neck : {index} - {feat.shape}')
             outs.append(feat)
         return tuple(outs)
 

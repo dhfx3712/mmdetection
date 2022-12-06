@@ -7,7 +7,7 @@ import torch
 from torch.nn.modules.utils import _pair
 
 from .builder import PRIOR_GENERATORS
-
+from mmdet.utils import Log_debug
 
 @PRIOR_GENERATORS.register_module()
 class AnchorGenerator:
@@ -503,6 +503,7 @@ class SSDAnchorGenerator(AnchorGenerator):
         self.centers = [(stride[0] / 2., stride[1] / 2.)
                         for stride in self.strides]
 
+        Log_debug.info(f'ssdanchor : strides - {self.strides} , centers - {self.centers} ,num_levels - {self.num_levels}')
         if min_sizes is None and max_sizes is None:
             # use hard code to generate SSD anchors
             self.input_size = input_size
@@ -515,9 +516,11 @@ class SSDAnchorGenerator(AnchorGenerator):
             step = int(np.floor(max_ratio - min_ratio) / (self.num_levels - 2))
             min_sizes = []
             max_sizes = []
+            Log_debug.info(f'ssdanchor : input - {self.input_size} ,min_ratio - {min_ratio} ,max_ratio - {max_ratio} ,step - {step}')
             for ratio in range(int(min_ratio), int(max_ratio) + 1, step):
                 min_sizes.append(int(self.input_size * ratio / 100))
                 max_sizes.append(int(self.input_size * (ratio + step) / 100))
+            #插入第一个位置
             if self.input_size == 300:
                 if basesize_ratio_range[0] == 0.15:  # SSD300 COCO
                     min_sizes.insert(0, int(self.input_size * 7 / 100))
@@ -550,7 +553,7 @@ class SSDAnchorGenerator(AnchorGenerator):
                     f'got {self.input_size}.')
 
         assert len(min_sizes) == len(max_sizes) == len(strides)
-
+        Log_debug.info(f'ssdanchor : minsize - {min_sizes} , maxsize - {max_sizes}')
         anchor_ratios = []
         anchor_scales = []
         for k in range(len(self.strides)):
@@ -562,12 +565,12 @@ class SSDAnchorGenerator(AnchorGenerator):
             anchor_scales.append(torch.Tensor(scales))
 
         self.base_sizes = min_sizes
-        self.scales = anchor_scales
+        self.scales = anchor_scales #max_size/min_size
         self.ratios = anchor_ratios
         self.scale_major = scale_major
         self.center_offset = 0
         self.base_anchors = self.gen_base_anchors()
-
+        Log_debug.info(f'ssdanchor : base_sizes - {self.base_sizes} ,scales - {self.scales} ,ratios - {self.ratios} ,major - {self.scale_major} ,base_anchors - {self.base_anchors}')
     def gen_base_anchors(self):
         """Generate base anchors.
 

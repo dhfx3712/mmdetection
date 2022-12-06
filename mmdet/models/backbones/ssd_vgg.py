@@ -7,7 +7,7 @@ from mmcv.runner import BaseModule
 
 from ..builder import BACKBONES
 from ..necks import ssd_neck
-
+from mmdet.utils import Log_debug
 
 @BACKBONES.register_module()
 class SSDVGG(VGG, BaseModule):
@@ -76,6 +76,7 @@ class SSDVGG(VGG, BaseModule):
             str(len(self.features)), nn.Conv2d(1024, 1024, kernel_size=1))
         self.features.add_module(
             str(len(self.features)), nn.ReLU(inplace=True))
+        Log_debug.info(f'ssd_vgg : self.features {self.features}')
         self.out_feature_indices = out_feature_indices
 
         assert not (init_cfg and pretrained), \
@@ -110,6 +111,7 @@ class SSDVGG(VGG, BaseModule):
         outs = []
         for i, layer in enumerate(self.features):
             x = layer(x)
+            Log_debug.info(f'ssd_vgg : {i} - {x.shape}')
             if i in self.out_feature_indices:
                 outs.append(x)
 

@@ -63,3 +63,6 @@ def log_img_scale(img_scale, shape_order='hw', skip_square=False):
     logger.info(f'image shape: height={height}, width={width} in {caller}')
 
     return True
+
+
+Log_debug = get_root_logger('./debug.log',log_level=logging.INFO)

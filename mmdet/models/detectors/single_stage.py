@@ -6,7 +6,7 @@ import torch
 from mmdet.core import bbox2result
 from ..builder import DETECTORS, build_backbone, build_head, build_neck
 from .base import BaseDetector
-
+from mmdet.utils import Log_debug
 
 @DETECTORS.register_module()
 class SingleStageDetector(BaseDetector):
@@ -41,8 +41,10 @@ class SingleStageDetector(BaseDetector):
     def extract_feat(self, img):
         """Directly extract features from the backbone+neck."""
         x = self.backbone(img)
+        Log_debug.info(f'singstage_backbone : {len(x)} , {[i.shape for i in x]}')
         if self.with_neck:
             x = self.neck(x)
+            Log_debug.info(f'singstage_neck : {len(x)} , {[i.shape for i in x]}')
         return x
 
     def forward_dummy(self, img):
@@ -79,6 +81,7 @@ class SingleStageDetector(BaseDetector):
             dict[str, Tensor]: A dictionary of loss components.
         """
         super(SingleStageDetector, self).forward_train(img, img_metas)
+        Log_debug.info(f'singstage_input : {img.shape}')
         x = self.extract_feat(img)
         losses = self.bbox_head.forward_train(x, img_metas, gt_bboxes,
                                               gt_labels, gt_bboxes_ignore)

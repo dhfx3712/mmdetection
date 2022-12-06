@@ -1,383 +1,377 @@
-(test_openmmlab) admin@bogon mmdetection % python tools/train.py configs/yolo/rr_yolov5_416_coco.py
+<div align="center">
+  <img src="resources/mmdet-logo.png" width="600"/>
+  <div>&nbsp;</div>
+  <div align="center">
+    <b><font size="5">OpenMMLab 官网</font></b>
+    <sup>
+      <a href="https://openmmlab.com">
+        <i><font size="4">HOT</font></i>
+      </a>
+    </sup>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <b><font size="5">OpenMMLab 开放平台</font></b>
+    <sup>
+      <a href="https://platform.openmmlab.com">
+        <i><font size="4">TRY IT OUT</font></i>
+      </a>
+    </sup>
+  </div>
+  <div>&nbsp;</div>
 
+[![PyPI](https://img.shields.io/pypi/v/mmdet)](https://pypi.org/project/mmdet)
+[![docs](https://img.shields.io/badge/docs-latest-blue)](https://mmdetection.readthedocs.io/en/latest/)
+[![badge](https://github.com/open-mmlab/mmdetection/workflows/build/badge.svg)](https://github.com/open-mmlab/mmdetection/actions)
+[![codecov](https://codecov.io/gh/open-mmlab/mmdetection/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmdetection)
+[![license](https://img.shields.io/github/license/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/blob/master/LICENSE)
+[![open issues](https://isitmaintained.com/badge/open/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/issues)
+[![issue resolution](https://isitmaintained.com/badge/resolution/open-mmlab/mmdetection.svg)](https://github.com/open-mmlab/mmdetection/issues)
 
+[📘使用文档](https://mmdetection.readthedocs.io/zh_CN/stable/) |
+[🛠️安装教程](https://mmdetection.readthedocs.io/zh_CN/stable/get_started.html) |
+[👀模型库](https://mmdetection.readthedocs.io/zh_CN/stable/model_zoo.html) |
+[🆕更新日志](https://mmdetection.readthedocs.io/en/stable/changelog.html) |
+[🚀进行中的项目](https://github.com/open-mmlab/mmdetection/projects) |
+[🤔报告问题](https://github.com/open-mmlab/mmdetection/issues/new/choose)
 
+</div>
 
+<div align="center">
 
-config/yolov4
-base_yolo_head.py
-yolo_head : 1 ,pre_map : torch.Size([1, 75, 9, 13])
-yolo_head : 1 ,pre_map : torch.Size([1, 75, 18, 26])
-yolo_head : 1 ,pre_map : torch.Size([1, 75, 36, 52])
-yolo_head : 1 ,pre_map : torch.Size([1, 75, 9, 13])
-yolo_head : 1 ,pre_map : torch.Size([1, 75, 18, 26])
-yolo_head : 1 ,pre_map : torch.Size([1, 75, 36, 52])
+[English](README.md) | 简体中文
 
+</div>
 
+## 简介
 
-yolo5 
-rr_yolov5_head.py类别固定80个类
+MMDetection 是一个基于 PyTorch 的目标检测开源工具箱。它是 [OpenMMLab](https://openmmlab.com/) 项目的一部分。
 
+主分支代码目前支持 PyTorch 1.5 以上的版本。
 
+<img src="https://user-images.githubusercontent.com/12907710/137271636-56ba1cd2-b110-4812-8221-b4c120320aa9.png"/>
 
+<details open>
+<summary>主要特性</summary>
 
+- **模块化设计**
 
+  MMDetection 将检测框架解耦成不同的模块组件，通过组合不同的模块组件，用户可以便捷地构建自定义的检测模型
 
+- **丰富的即插即用的算法和模型**
 
+  MMDetection 支持了众多主流的和最新的检测算法，例如 Faster R-CNN，Mask R-CNN，RetinaNet 等。
 
+- **速度快**
 
+  基本的框和 mask 操作都实现了 GPU 版本，训练速度比其他代码库更快或者相当，包括 [Detectron2](https://github.com/facebookresearch/detectron2), [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) 和 [SimpleDet](https://github.com/TuSimple/simpledet)。
 
-fasterfpn 结构
-demo/MMDet_Tutorial.py提取demo/test_train.py 
-(test_openmmlab) admin@bogon mmdetection % python demo/test_train.py
-Config:
-model = dict(
-    type='FasterRCNN',
-    backbone=dict(
-        type='ResNet',
-        depth=101,
-        num_stages=4,
-        out_indices=(0, 1, 2, 3),
-        frozen_stages=1,
-        norm_cfg=dict(type='BN', requires_grad=True),
-        norm_eval=True,
-        style='pytorch',
-        init_cfg=dict(type='Pretrained',
-                      checkpoint='torchvision://resnet101')),
-    neck=dict(
-        type='FPN',
-        in_channels=[256, 512, 1024, 2048],
-        out_channels=256,
-        num_outs=5),
-    rpn_head=dict(
-        type='RPNHead',
-        in_channels=256,
-        feat_channels=256,
-        anchor_generator=dict(
-            type='AnchorGenerator',
-            scales=[8],
-            ratios=[0.5, 1.0, 2.0],
-            strides=[4, 8, 16, 32, 64]),
-        bbox_coder=dict(
-            type='DeltaXYWHBBoxCoder',
-            target_means=[0.0, 0.0, 0.0, 0.0],
-            target_stds=[1.0, 1.0, 1.0, 1.0]),
-        loss_cls=dict(
-            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
-        loss_bbox=dict(type='L1Loss', loss_weight=1.0)),
-    roi_head=dict(
-        type='StandardRoIHead',
-        bbox_roi_extractor=dict(
-            type='SingleRoIExtractor',
-            roi_layer=dict(type='RoIAlign', output_size=7, sampling_ratio=0),
-            out_channels=256,
-            featmap_strides=[4, 8, 16, 32]),
-        bbox_head=dict(
-            type='Shared2FCBBoxHead',
-            in_channels=256,
-            fc_out_channels=1024,
-            roi_feat_size=7,
-            num_classes=3,
-            bbox_coder=dict(
-                type='DeltaXYWHBBoxCoder',
-                target_means=[0.0, 0.0, 0.0, 0.0],
-                target_stds=[0.1, 0.1, 0.2, 0.2]),
-            reg_class_agnostic=False,
-            loss_cls=dict(
-                type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
-            loss_bbox=dict(type='L1Loss', loss_weight=1.0))),
-    train_cfg=dict(
-        rpn=dict(
-            assigner=dict(
-                type='MaxIoUAssigner',
-                pos_iou_thr=0.7,
-                neg_iou_thr=0.3,
-                min_pos_iou=0.3,
-                match_low_quality=True,
-                ignore_iof_thr=-1),
-            sampler=dict(
-                type='RandomSampler',
-                num=256,
-                pos_fraction=0.5,
-                neg_pos_ub=-1,
-                add_gt_as_proposals=False),
-            allowed_border=-1,
-            pos_weight=-1,
-            debug=False),
-        rpn_proposal=dict(
-            nms_pre=2000,
-            max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.7),
-            min_bbox_size=0),
-        rcnn=dict(
-            assigner=dict(
-                type='MaxIoUAssigner',
-                pos_iou_thr=0.5,
-                neg_iou_thr=0.5,
-                min_pos_iou=0.5,
-                match_low_quality=False,
-                ignore_iof_thr=-1),
-            sampler=dict(
-                type='RandomSampler',
-                num=512,
-                pos_fraction=0.25,
-                neg_pos_ub=-1,
-                add_gt_as_proposals=True),
-            pos_weight=-1,
-            debug=False)),
-    test_cfg=dict(
-        rpn=dict(
-            nms_pre=1000,
-            max_per_img=1000,
-            nms=dict(type='nms', iou_threshold=0.7),
-            min_bbox_size=0),
-        rcnn=dict(
-            score_thr=0.05,
-            nms=dict(type='nms', iou_threshold=0.5),
-            max_per_img=100)))
-dataset_type = 'KittiTinyDataset'
-data_root = '/Users/admin/data/kitti_tiny/'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-train_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
-    dict(type='RandomFlip', flip_ratio=0.5),
-    dict(
-        type='Normalize',
-        mean=[123.675, 116.28, 103.53],
-        std=[58.395, 57.12, 57.375],
-        to_rgb=True),
-    dict(type='Pad', size_divisor=32),
-    dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
-]
-test_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(
-        type='MultiScaleFlipAug',
-        img_scale=(1333, 800),
-        flip=False,
-        transforms=[
-            dict(type='Resize', keep_ratio=True),
-            dict(type='RandomFlip'),
-            dict(
-                type='Normalize',
-                mean=[123.675, 116.28, 103.53],
-                std=[58.395, 57.12, 57.375],
-                to_rgb=True),
-            dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img'])
-        ])
-]
-data = dict(
-    samples_per_gpu=2,
-    workers_per_gpu=2,
-    train=dict(
-        type='KittiTinyDataset',
-        ann_file='train.txt',
-        img_prefix='training/image_2',
-        pipeline=[
-            dict(type='LoadImageFromFile'),
-            dict(type='LoadAnnotations', with_bbox=True),
-            dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
-            dict(type='RandomFlip', flip_ratio=0.5),
-            dict(
-                type='Normalize',
-                mean=[123.675, 116.28, 103.53],
-                std=[58.395, 57.12, 57.375],
-                to_rgb=True),
-            dict(type='Pad', size_divisor=32),
-            dict(type='DefaultFormatBundle'),
-            dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
-        ],
-        data_root='/Users/admin/data/kitti_tiny/'),
-    val=dict(
-        type='KittiTinyDataset',
-        ann_file='val.txt',
-        img_prefix='training/image_2',
-        pipeline=[
-            dict(type='LoadImageFromFile'),
-            dict(
-                type='MultiScaleFlipAug',
-                img_scale=(1333, 800),
-                flip=False,
-                transforms=[
-                    dict(type='Resize', keep_ratio=True),
-                    dict(type='RandomFlip'),
-                    dict(
-                        type='Normalize',
-                        mean=[123.675, 116.28, 103.53],
-                        std=[58.395, 57.12, 57.375],
-                        to_rgb=True),
-                    dict(type='Pad', size_divisor=32),
-                    dict(type='ImageToTensor', keys=['img']),
-                    dict(type='Collect', keys=['img'])
-                ])
-        ],
-        data_root='/Users/admin/data/kitti_tiny/'),
-    test=dict(
-        type='KittiTinyDataset',
-        ann_file='train.txt',
-        img_prefix='training/image_2',
-        pipeline=[
-            dict(type='LoadImageFromFile'),
-            dict(
-                type='MultiScaleFlipAug',
-                img_scale=(1333, 800),
-                flip=False,
-                transforms=[
-                    dict(type='Resize', keep_ratio=True),
-                    dict(type='RandomFlip'),
-                    dict(
-                        type='Normalize',
-                        mean=[123.675, 116.28, 103.53],
-                        std=[58.395, 57.12, 57.375],
-                        to_rgb=True),
-                    dict(type='Pad', size_divisor=32),
-                    dict(type='ImageToTensor', keys=['img']),
-                    dict(type='Collect', keys=['img'])
-                ])
-        ],
-        data_root='/Users/admin/data/kitti_tiny/'))
-evaluation = dict(interval=12, metric='mAP')
-optimizer = dict(type='SGD', lr=0.0025, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=None)
-lr_config = dict(
-    policy='step',
-    warmup=None,
-    warmup_iters=500,
-    warmup_ratio=0.001,
-    step=[8, 11])
-runner = dict(type='EpochBasedRunner', max_epochs=12)
-checkpoint_config = dict(interval=12)
-log_config = dict(
-    interval=10,
-    hooks=[dict(type='TextLoggerHook'),
-           dict(type='TensorboardLoggerHook')])
-custom_hooks = [dict(type='NumClassCheckHook')]
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-load_from = '/Users/admin/Downloads/models/faster_rcnn_r101_fpn_1x_coco_20200130-f513f705.pth'
-resume_from = None
-workflow = [('train', 1)]
-opencv_num_threads = 0
-mp_start_method = 'fork'
-auto_scale_lr = dict(enable=False, base_batch_size=2)
-work_dir = './tutorial_exps'
-seed = 0
-gpu_ids = range(0, 1)
-device = 'cpu'
+- **性能高**
 
-demo/test_train.py:55: DeprecationWarning: `np.long` is a deprecated alias for `np.compat.long`. To silence this warning, use `np.compat.long` by itself. In the likely event your code does not need to work on Python 2 you can use the builtin `int` for which `np.compat.long` is itself an alias. Doing this will not modify any behaviour and is safe. When replacing `np.long`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
-Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
-  labels=np.array(gt_labels, dtype=np.long),
-demo/test_train.py:58: DeprecationWarning: `np.long` is a deprecated alias for `np.compat.long`. To silence this warning, use `np.compat.long` by itself. In the likely event your code does not need to work on Python 2 you can use the builtin `int` for which `np.compat.long` is itself an alias. Doing this will not modify any behaviour and is safe. When replacing `np.long`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
-Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
-  labels_ignore=np.array(gt_labels_ignore, dtype=np.long))
-/Users/admin/data/test_project/mmdetection/mmdet/datasets/custom.py:180: UserWarning: CustomDataset does not support filtering empty gt images.
-  'CustomDataset does not support filtering empty gt images.')
-train_detector : {'samples_per_gpu': 2, 'workers_per_gpu': 2, 'num_gpus': 1, 'dist': False, 'seed': 0, 'runner_type': 'EpochBasedRunner', 'persistent_workers': False}
-2022-11-01 11:26:16,632 - mmdet - INFO - Automatic scaling of learning rate (LR) has been disabled.
-2022-11-01 11:26:16,774 - mmdet - INFO - load checkpoint from local path: /Users/admin/Downloads/models/faster_rcnn_r101_fpn_1x_coco_20200130-f513f705.pth
-2022-11-01 11:26:17,034 - mmdet - WARNING - The model and loaded state dict do not match exactly
+  MMDetection 这个算法库源自于 COCO 2018 目标检测竞赛的冠军团队 *MMDet* 团队开发的代码，我们在之后持续进行了改进和提升。
 
-size mismatch for roi_head.bbox_head.fc_cls.weight: copying a param with shape torch.Size([81, 1024]) from checkpoint, the shape in current model is torch.Size([4, 1024]).
-size mismatch for roi_head.bbox_head.fc_cls.bias: copying a param with shape torch.Size([81]) from checkpoint, the shape in current model is torch.Size([4]).
-size mismatch for roi_head.bbox_head.fc_reg.weight: copying a param with shape torch.Size([320, 1024]) from checkpoint, the shape in current model is torch.Size([12, 1024]).
-size mismatch for roi_head.bbox_head.fc_reg.bias: copying a param with shape torch.Size([320]) from checkpoint, the shape in current model is torch.Size([12]).
-2022-11-01 11:26:17,058 - mmdet - INFO - Start running, host: admin@bogon, work_dir: /Users/admin/data/test_project/mmdetection/tutorial_exps
-2022-11-01 11:26:17,059 - mmdet - INFO - Hooks will be executed in the following order:
-before_run:
+</details>
 
+除了 MMDetection 之外，我们还开源了计算机视觉基础库 [MMCV](https://github.com/open-mmlab/mmcv)，MMCV 是 MMDetection 的主要依赖。
 
+## 最新进展
 
+最新的 **2.25.0** 版本已经在 2022.06.01 发布:
 
+- 支持功能更丰富的 `MMDetWandbHook`
+- 支持算法 [ConvNeXt](configs/convnext), [DDOD](configs/ddod) 和 [SOLOv2](configs/solov2)
+- [Mask2Former](configs/mask2former) 支持实例分割
+- 为了加入 Mask2Former 实例分割的模型，对 Mask2Former 原有的全景分割的配置文件进行了重命名
 
-two_stage_backbone_neck : 5,
-rpn_head : 2 , img_metas : [{'filename': '/Users/admin/data/kitti_tiny/training/image_2/000003.jpeg', 'ori_filename': '000003.jpeg', 'ori_shape': (375, 1242, 3), 'img_shape': (402, 1333, 3), 'pad_shape': (416, 1344, 3), 'scale_factor': array([1.0732689, 1.072    , 1.0732689, 1.072    ], dtype=float32), 'flip': False, 'flip_direction': None, 'img_norm_cfg': {'mean': array([123.675, 116.28 , 103.53 ], dtype=float32), 'std': array([58.395, 57.12 , 57.375], dtype=float32), 'to_rgb': True}}, {'filename': '/Users/admin/data/kitti_tiny/training/image_2/000000.jpeg', 'ori_filename': '000000.jpeg', 'ori_shape': (370, 1224, 3), 'img_shape': (403, 1333, 3), 'pad_shape': (416, 1344, 3), 'scale_factor': array([1.0890523, 1.0891892, 1.0890523, 1.0891892], dtype=float32), 'flip': False, 'flip_direction': None, 'img_norm_cfg': {'mean': array([123.675, 116.28 , 103.53 ], dtype=float32), 'std': array([58.395, 57.12 , 57.375], dtype=float32), 'to_rgb': True}}]
-max_iou_assigner_input : torch.Size([139671, 4]) torch.Size([1, 4]) None None iof_thr -1
-max_iou_assigner : iou torch.Size([1, 139671])  get_bb torch.Size([1, 4])  bb torch.Size([139671, 4])
-max_iou_assigner_paramma : {'pos_iou_thr': 0.7, 'neg_iou_thr': 0.3, 'min_pos_iou': 0.3, 'gt_max_assign_all': True, 'ignore_iof_thr': -1, 'ignore_wrt_candidates': True, 'gpu_assign_thr': -1, 'match_low_quality': True, 'iou_calculator': BboxOverlaps2D(scale=1.0, dtype=None)}
-max_iou_assigner_input : torch.Size([139671, 4]) torch.Size([1, 4]) None None iof_thr -1
-max_iou_assigner : iou torch.Size([1, 139671])  get_bb torch.Size([1, 4])  bb torch.Size([139671, 4])
-max_iou_assigner_paramma : {'pos_iou_thr': 0.7, 'neg_iou_thr': 0.3, 'min_pos_iou': 0.3, 'gt_max_assign_all': True, 'ignore_iof_thr': -1, 'ignore_wrt_candidates': True, 'gpu_assign_thr': -1, 'match_low_quality': True, 'iou_calculator': BboxOverlaps2D(scale=1.0, dtype=None)}
-max_iou_assigner_input : torch.Size([1000, 5]) torch.Size([1, 4]) None tensor([0]) iof_thr -1
-max_iou_assigner : iou torch.Size([1, 1000])  get_bb torch.Size([1, 4])  bb torch.Size([1000, 5])
-max_iou_assigner_paramma : {'pos_iou_thr': 0.5, 'neg_iou_thr': 0.5, 'min_pos_iou': 0.5, 'gt_max_assign_all': True, 'ignore_iof_thr': -1, 'ignore_wrt_candidates': True, 'gpu_assign_thr': -1, 'match_low_quality': False, 'iou_calculator': BboxOverlaps2D(scale=1.0, dtype=None)}
-roi_bbox_assigner batch-0, assign_result  <AssignResult(num_gts=1, gt_inds.shape=(1000,), max_overlaps.shape=(1000,), labels.shape=(1000,))>
-max_iou_assigner_input : torch.Size([1000, 5]) torch.Size([1, 4]) None tensor([1]) iof_thr -1
-max_iou_assigner : iou torch.Size([1, 1000])  get_bb torch.Size([1, 4])  bb torch.Size([1000, 5])
-max_iou_assigner_paramma : {'pos_iou_thr': 0.5, 'neg_iou_thr': 0.5, 'min_pos_iou': 0.5, 'gt_max_assign_all': True, 'ignore_iof_thr': -1, 'ignore_wrt_candidates': True, 'gpu_assign_thr': -1, 'match_low_quality': False, 'iou_calculator': BboxOverlaps2D(scale=1.0, dtype=None)}
+如果想了解更多版本更新细节和历史信息，请阅读[更新日志](docs/en/changelog.md)。
 
+如果想了解 MMDetection 不同版本之间的兼容性, 请参考[兼容性说明文档](docs/zh_cn/compatibility.md)。
 
+## 安装
 
+请参考[安装指令](docs/zh_cn/get_started.md/#Installation)进行安装。
 
+## 教程
 
+请参考[快速入门文档](docs/zh_cn/get_started.md)学习 MMDetection 的基本使用。
+我们提供了 [检测的 colab 教程](demo/MMDet_Tutorial.ipynb) 和 [实例分割的 colab 教程](demo/MMDet_InstanceSeg_Tutorial.ipynb)，也为新手提供了完整的运行教程，其他教程如下
 
-mmdet/models/detectors/faster_rcnn.py
-class FasterRCNN(TwoStageDetector) 传入两个head（rpnhead，roihead）
-    
+- [使用已有模型在标准数据集上进行推理](docs/zh_cn/1_exist_data_model.md)
+- [在自定义数据集上进行训练](docs/zh_cn/2_new_data_model.md)
+- [在标准数据集上训练自定义模型](docs/zh_cn/3_exist_data_new_model.md)
+- [学习配置文件](docs/zh_cn/tutorials/config.md)
+- [自定义数据集](docs/zh_cn/tutorials/customize_dataset.md)
+- [自定义数据预处理流程](docs/zh_cn/tutorials/data_pipeline.md)
+- [自定义模型](docs/zh_cn/tutorials/customize_models.md)
+- [自定义训练配置](docs/zh_cn/tutorials/customize_runtime.md)
+- [自定义损失函数](docs/zh_cn/tutorials/customize_losses.md)
+- [模型微调](docs/zh_cn/tutorials/finetune.md)
+- [Pytorch 到 ONNX 的模型转换](docs/zh_cn/tutorials/pytorch2onnx.md)
+- [ONNX 到 TensorRT 的模型转换](docs/zh_cn/tutorials/onnx2tensorrt.md)
+- [权重初始化](docs/zh_cn/tutorials/init_cfg.md)
+- [how to xxx](docs/zh_cn/tutorials/how_to.md)
 
+同时，我们还提供了 [MMDetection 中文解读文案汇总](docs/zh_cn/article.md)
 
+## 基准测试和模型库
 
- img_metas : [{'filename': '/Users/admin/data/kitti_tiny/training/image_2/000003.jpeg', 'ori_filename': '000003.jpeg', 'ori_shape': (375, 1242, 3), 'img_shape': (402, 1333, 3), 'pad_shape': (416, 1344, 3), 'scale_factor': array([1.0732689, 1.072    , 1.0732689, 1.072    ], dtype=float32), 'flip': False, 'flip_direction': None, 'img_norm_cfg': {'mean': array([123.675, 116.28 , 103.53 ], dtype=float32), 'std': array([58.395, 57.12 , 57.375], dtype=float32), 'to_rgb': True}}, {'filename': '/Users/admin/data/kitti_tiny/training/image_2/000000.jpeg', 'ori_filename': '000000.jpeg', 'ori_shape': (370, 1224, 3), 'img_shape': (403, 1333, 3), 'pad_shape': (416, 1344, 3), 'scale_factor': array([1.0890523, 1.0891892, 1.0890523, 1.0891892], dtype=float32), 'flip': False, 'flip_direction': None, 'img_norm_cfg': {'mean': array([123.675, 116.28 , 103.53 ], dtype=float32), 'std': array([58.395, 57.12 , 57.375], dtype=float32), 'to_rgb': True}}]
+测试结果和模型可以在[模型库](docs/zh_cn/model_zoo.md)中找到。
 
+<div align="center">
+  <b>算法架构</b>
+</div>
+<table align="center">
+  <tbody>
+    <tr align="center" valign="bottom">
+      <td>
+        <b>Object Detection</b>
+      </td>
+      <td>
+        <b>Instance Segmentation</b>
+      </td>
+      <td>
+        <b>Panoptic Segmentation</b>
+      </td>
+      <td>
+        <b>Other</b>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>
+        <ul>
+            <li><a href="configs/fast_rcnn">Fast R-CNN (ICCV'2015)</a></li>
+            <li><a href="configs/faster_rcnn">Faster R-CNN (NeurIPS'2015)</a></li>
+            <li><a href="configs/rpn">RPN (NeurIPS'2015)</a></li>
+            <li><a href="configs/ssd">SSD (ECCV'2016)</a></li>
+            <li><a href="configs/retinanet">RetinaNet (ICCV'2017)</a></li>
+            <li><a href="configs/cascade_rcnn">Cascade R-CNN (CVPR'2018)</a></li>
+            <li><a href="configs/yolo">YOLOv3 (ArXiv'2018)</a></li>
+            <li><a href="configs/cornernet">CornerNet (ECCV'2018)</a></li>
+            <li><a href="configs/grid_rcnn">Grid R-CNN (CVPR'2019)</a></li>
+            <li><a href="configs/guided_anchoring">Guided Anchoring (CVPR'2019)</a></li>
+            <li><a href="configs/fsaf">FSAF (CVPR'2019)</a></li>
+            <li><a href="configs/centernet">CenterNet (CVPR'2019)</a></li>
+            <li><a href="configs/libra_rcnn">Libra R-CNN (CVPR'2019)</a></li>
+            <li><a href="configs/tridentnet">TridentNet (ICCV'2019)</a></li>
+            <li><a href="configs/fcos">FCOS (ICCV'2019)</a></li>
+            <li><a href="configs/reppoints">RepPoints (ICCV'2019)</a></li>
+            <li><a href="configs/free_anchor">FreeAnchor (NeurIPS'2019)</a></li>
+            <li><a href="configs/cascade_rpn">CascadeRPN (NeurIPS'2019)</a></li>
+            <li><a href="configs/foveabox">Foveabox (TIP'2020)</a></li>
+            <li><a href="configs/double_heads">Double-Head R-CNN (CVPR'2020)</a></li>
+            <li><a href="configs/atss">ATSS (CVPR'2020)</a></li>
+            <li><a href="configs/nas_fcos">NAS-FCOS (CVPR'2020)</a></li>
+            <li><a href="configs/centripetalnet">CentripetalNet (CVPR'2020)</a></li>
+            <li><a href="configs/autoassign">AutoAssign (ArXiv'2020)</a></li>
+            <li><a href="configs/sabl">Side-Aware Boundary Localization (ECCV'2020)</a></li>
+            <li><a href="configs/dynamic_rcnn">Dynamic R-CNN (ECCV'2020)</a></li>
+            <li><a href="configs/detr">DETR (ECCV'2020)</a></li>
+            <li><a href="configs/paa">PAA (ECCV'2020)</a></li>
+            <li><a href="configs/vfnet">VarifocalNet (CVPR'2021)</a></li>
+            <li><a href="configs/sparse_rcnn">Sparse R-CNN (CVPR'2021)</a></li>
+            <li><a href="configs/yolof">YOLOF (CVPR'2021)</a></li>
+            <li><a href="configs/yolox">YOLOX (CVPR'2021)</a></li>
+            <li><a href="configs/deformable_detr">Deformable DETR (ICLR'2021)</a></li>
+            <li><a href="configs/tood">TOOD (ICCV'2021)</a></li>
+            <li><a href="configs/ddod">DDOD (ACM MM'2021)</a></li>
+      </ul>
+      </td>
+      <td>
+        <ul>
+          <li><a href="configs/mask_rcnn">Mask R-CNN (ICCV'2017)</a></li>
+          <li><a href="configs/cascade_rcnn">Cascade Mask R-CNN (CVPR'2018)</a></li>
+          <li><a href="configs/ms_rcnn">Mask Scoring R-CNN (CVPR'2019)</a></li>
+          <li><a href="configs/htc">Hybrid Task Cascade (CVPR'2019)</a></li>
+          <li><a href="configs/yolact">YOLACT (ICCV'2019)</a></li>
+          <li><a href="configs/instaboost">InstaBoost (ICCV'2019)</a></li>
+          <li><a href="configs/solo">SOLO (ECCV'2020)</a></li>
+          <li><a href="configs/point_rend">PointRend (CVPR'2020)</a></li>
+          <li><a href="configs/detectors">DetectoRS (ArXiv'2020)</a></li>
+          <li><a href="configs/solov2">SOLOv2 (NeurIPS'2020)</a></li>
+          <li><a href="configs/scnet">SCNet (AAAI'2021)</a></li>
+          <li><a href="configs/queryinst">QueryInst (ICCV'2021)</a></li>
+          <li><a href="configs/mask2former">Mask2Former (ArXiv'2021)</a></li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li><a href="configs/panoptic_fpn">Panoptic FPN (CVPR'2019)</a></li>
+          <li><a href="configs/maskformer">MaskFormer (NeurIPS'2021)</a></li>
+          <li><a href="configs/mask2former">Mask2Former (ArXiv'2021)</a></li>
+        </ul>
+      </td>
+      <td>
+        </ul>
+          <li><b>Contrastive Learning</b></li>
+        <ul>
+        <ul>
+          <li><a href="configs/selfsup_pretrain">SwAV (NeurIPS'2020)</a></li>
+          <li><a href="configs/selfsup_pretrain">MoCo (CVPR'2020)</a></li>
+          <li><a href="configs/selfsup_pretrain">MoCov2 (ArXiv'2020)</a></li>
+        </ul>
+        </ul>
+        </ul>
+          <li><b>Distillation</b></li>
+        <ul>
+        <ul>
+          <li><a href="configs/ld">Localization Distillation (CVPR'2022)</a></li>
+          <li><a href="configs/lad">Label Assignment Distillation (WACV'2022)</a></li>
+        </ul>
+        </ul>
+      </ul>
+      </td>
+    </tr>
+</td>
+    </tr>
+  </tbody>
+</table>
 
+<div align="center">
+  <b>模块组件</b>
+</div>
+<table align="center">
+  <tbody>
+    <tr align="center" valign="bottom">
+      <td>
+        <b>Backbones</b>
+      </td>
+      <td>
+        <b>Necks</b>
+      </td>
+      <td>
+        <b>Loss</b>
+      </td>
+      <td>
+        <b>Common</b>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td>
+      <ul>
+        <li>VGG (ICLR'2015)</li>
+        <li>ResNet (CVPR'2016)</li>
+        <li>ResNeXt (CVPR'2017)</li>
+        <li>MobileNetV2 (CVPR'2018)</li>
+        <li><a href="configs/hrnet">HRNet (CVPR'2019)</a></li>
+        <li><a href="configs/empirical_attention">Generalized Attention (ICCV'2019)</a></li>
+        <li><a href="configs/gcnet">GCNet (ICCVW'2019)</a></li>
+        <li><a href="configs/res2net">Res2Net (TPAMI'2020)</a></li>
+        <li><a href="configs/regnet">RegNet (CVPR'2020)</a></li>
+        <li><a href="configs/resnest">ResNeSt (ArXiv'2020)</a></li>
+        <li><a href="configs/pvt">PVT (ICCV'2021)</a></li>
+        <li><a href="configs/swin">Swin (CVPR'2021)</a></li>
+        <li><a href="configs/pvt">PVTv2 (ArXiv'2021)</a></li>
+        <li><a href="configs/resnet_strikes_back">ResNet strikes back (ArXiv'2021)</a></li>
+        <li><a href="configs/efficientnet">EfficientNet (ArXiv'2021)</a></li>
+        <li><a href="configs/convnext">ConvNeXt (CVPR'2022)</a></li>
+      </ul>
+      </td>
+      <td>
+      <ul>
+        <li><a href="configs/pafpn">PAFPN (CVPR'2018)</a></li>
+        <li><a href="configs/nas_fpn">NAS-FPN (CVPR'2019)</a></li>
+        <li><a href="configs/carafe">CARAFE (ICCV'2019)</a></li>
+        <li><a href="configs/fpg">FPG (ArXiv'2020)</a></li>
+        <li><a href="configs/groie">GRoIE (ICPR'2020)</a></li>
+        <li><a href="configs/dyhead">DyHead (CVPR'2021)</a></li>
+      </ul>
+      </td>
+      <td>
+        <ul>
+          <li><a href="configs/ghm">GHM (AAAI'2019)</a></li>
+          <li><a href="configs/gfl">Generalized Focal Loss (NeurIPS'2020)</a></li>
+          <li><a href="configs/seesaw_loss">Seasaw Loss (CVPR'2021)</a></li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li><a href="configs/faster_rcnn/faster_rcnn_r50_fpn_ohem_1x_coco.py">OHEM (CVPR'2016)</a></li>
+          <li><a href="configs/gn">Group Normalization (ECCV'2018)</a></li>
+          <li><a href="configs/dcn">DCN (ICCV'2017)</a></li>
+          <li><a href="configs/dcnv2">DCNv2 (CVPR'2019)</a></li>
+          <li><a href="configs/gn+ws">Weight Standardization (ArXiv'2019)</a></li>
+          <li><a href="configs/pisa">Prime Sample Attention (CVPR'2020)</a></li>
+          <li><a href="configs/strong_baselines">Strong Baselines (CVPR'2021)</a></li>
+          <li><a href="configs/resnet_strikes_back">Resnet strikes back (ArXiv'2021)</a></li>
+        </ul>
+      </td>
+    </tr>
+</td>
+    </tr>
+  </tbody>
+</table>
 
-rpnhead_loss
-mmdet/models/detectors/two_stage.py
-rpn_losses, proposal_list = self.rpn_head.forward_train(x,img_metas,gt_bboxes,gt_labels=None,gt_bboxes_ignore=gt_bboxes_ignore,proposal_cfg=proposal_cfg,**kwargs)
-       mmdet/models/dense_heads/anchor_head.py
-       __init__ 初始化网络结构 （self._init_layers()）
-             mmdet/models/dense_heads/base_dense_head.py
-             forward_train(self,x,img_metas,gt_bboxes,gt_labels=None,gt_bboxes_ignore=None,proposal_cfg=None,**kwargs):
-                    /Users/admin/opt/anaconda3/envs/test_openmmlab/lib/python3.7/site-packages/torch/nn/modules/module.py
-                    outs = self(x) (module类中的__call__模块)
+我们在[基于 MMDetection 的项目](./docs/zh_cn/projects.md)中列举了一些其他的支持的算法。
 
+## 常见问题
 
-roi_losses = self.roi_head.forward_train(x, img_metas, proposal_list,
-                                                 gt_bboxes, gt_labels,
-                                                 gt_bboxes_ignore, gt_masks,
-                                                 **kwargs)
+请参考 [FAQ](docs/zh_cn/faq.md) 了解其他用户的常见问题。
 
-mmdet/models/roi_heads/standard_roi_head.py
-forward_train(self,x,img_metas,proposal_list,gt_bboxes,gt_labels,gt_bboxes_ignore=None,gt_masks=None,**kwargs):
-    mmdet/core/bbox/assigners/max_iou_assigner.py
-    self.bbox_assigner = build_assigner(self.train_cfg.assigner)
-    assign_result = self.bbox_assigner.assign(proposal_list[i], gt_bboxes[i], gt_bboxes_ignore[i],gt_labels[i])
+## 贡献指南
 
+我们感谢所有的贡献者为改进和提升 MMDetection 所作出的努力。我们将正在进行中的项目添加进了[GitHub Projects](https://github.com/open-mmlab/mmdetection/projects)页面，非常欢迎社区用户能参与进这些项目中来。请参考[贡献指南](.github/CONTRIBUTING.md)来了解参与项目贡献的相关指引。
 
+## 致谢
 
+MMDetection 是一款由来自不同高校和企业的研发人员共同参与贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。 我们希望这个工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现已有算法并开发自己的新模型，从而不断为开源社区提供贡献。
 
+## 引用
 
-bbox assigner策略
-https://zhuanlan.zhihu.com/p/464404563
-self.bbox_assigner = build_assigner(self.train_cfg.assigner)
-MaxIoUAssigner
+如果你在研究中使用了本项目的代码或者性能基准，请参考如下 bibtex 引用 MMDetection。
 
+```
+@article{mmdetection,
+  title   = {{MMDetection}: Open MMLab Detection Toolbox and Benchmark},
+  author  = {Chen, Kai and Wang, Jiaqi and Pang, Jiangmiao and Cao, Yuhang and
+             Xiong, Yu and Li, Xiaoxiao and Sun, Shuyang and Feng, Wansen and
+             Liu, Ziwei and Xu, Jiarui and Zhang, Zheng and Cheng, Dazhi and
+             Zhu, Chenchen and Cheng, Tianheng and Zhao, Qijie and Li, Buyu and
+             Lu, Xin and Zhu, Rui and Wu, Yue and Dai, Jifeng and Wang, Jingdong
+             and Shi, Jianping and Ouyang, Wanli and Loy, Chen Change and Lin, Dahua},
+  journal= {arXiv preprint arXiv:1906.07155},
+  year={2019}
+}
+```
 
+## 开源许可证
 
-mmdet/core/bbox/assigners/max_iou_assigner.py
-MaxIoUAssigner
+该项目采用 [Apache 2.0 开源许可证](LICENSE)。
 
+## OpenMMLab 的其他项目
 
-     
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
+- [MIM](https://github.com/open-mmlab/mim): MIM 是 OpenMMlab 项目、算法、模型的统一入口
+- [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab 图像分类工具箱
+- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab 目标检测工具箱
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab 新一代通用 3D 目标检测平台
+- [MMRotate](https://github.com/open-mmlab/mmrotate): OpenMMLab 旋转框检测工具箱与测试基准
+- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab 语义分割工具箱
+- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab 全流程文字检测识别理解工具包
+- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab 姿态估计工具箱
+- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 人体参数化模型工具箱与测试基准
+- [MMSelfSup](https://github.com/open-mmlab/mmselfsup): OpenMMLab 自监督学习工具箱与测试基准
+- [MMRazor](https://github.com/open-mmlab/mmrazor): OpenMMLab 模型压缩工具箱与测试基准
+- [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab 少样本学习工具箱与测试基准
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab 新一代视频理解工具箱
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab 一体化视频目标感知平台
+- [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab 光流估计工具箱与测试基准
+- [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab 图像视频编辑工具箱
+- [MMGeneration](https://github.com/open-mmlab/mmgeneration): OpenMMLab 图片视频生成模型工具箱
+- [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab 模型部署框架
 
+## 欢迎加入 OpenMMLab 社区
 
+扫描下方的二维码可关注 OpenMMLab 团队的 [知乎官方账号](https://www.zhihu.com/people/openmmlab)，加入 OpenMMLab 团队的 [官方交流 QQ 群](https://jq.qq.com/?_wv=1027&k=aCvMxdr3)
 
+<div align="center">
+<img src="resources/zhihu_qrcode.jpg" height="400" />  <img src="resources/qq_group_qrcode.jpg" height="400" />
+</div>
 
+我们会在 OpenMMLab 社区为大家
 
-mmdet/models/dense_heads/rpn_head.py
-losses = super(RPNHead, self).loss(cls_scores,bbox_preds,gt_bboxes,None,img_metas,gt_bboxes_ignore=gt_bboxes_ignore)
-        mmdet/models/dense_heads/anchor_head.py
-        loss(self,cls_scores,bbox_preds,gt_bboxes,gt_labels,img_metas,gt_bboxes_ignore=None)
+- 📢 分享 AI 框架的前沿核心技术
+- 💻 解读 PyTorch 常用模块源码
+- 📰 发布 OpenMMLab 的相关新闻
+- 🚀 介绍 OpenMMLab 开发的前沿算法
+- 🏃 获取更高效的问题答疑和意见反馈
+- 🔥 提供与各行各业开发者充分交流的平台
 
-
-
-
-
-
-   
+干货满满 📘，等你来撩 💗，OpenMMLab 社区期待您的加入 👬
